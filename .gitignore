@@ -1,6 +1,18 @@
+###### ARQUIVOS E PASTAS DO WORKSPACE ######
+/.metadata/
+/.recommenders/
+/RemoteSystemsTempFiles/
+/server/
+###### ARQUIVOS E PASTAS DOS PROJETOS ######
+/target/
+/.settings/
+.project
+.classpath
+
+
+
 # Compiled class file
 *.class
-./target
 
 # Log file
 *.log
