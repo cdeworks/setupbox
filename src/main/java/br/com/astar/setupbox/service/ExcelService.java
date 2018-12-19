@@ -30,7 +30,7 @@ import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
-public class ExcelService extends ArquivoService {
+public class ExcelService extends ArquivoServiceAbstract {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
 	

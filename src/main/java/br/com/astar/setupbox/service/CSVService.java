@@ -25,7 +25,7 @@ import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
-public class CSVService extends ArquivoService {
+public class CSVService extends ArquivoServiceAbstract {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CSVService.class);
 	

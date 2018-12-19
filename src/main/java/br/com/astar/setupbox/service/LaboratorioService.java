@@ -26,6 +26,9 @@ public class LaboratorioService {
 	@Autowired
 	private CSVService csvService;
 	
+	@Autowired
+	private XMLService xmlService;
+	
 	public void processaArquivo(MultipartFile file) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		ContentTypeValidos tipoArquivo = excelService.getContentType(file);
@@ -36,6 +39,8 @@ public class LaboratorioService {
 			ativos = excelService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
 		} else if (tipoArquivo.equals(ContentTypeValidos.CSV)) {
 			ativos = csvService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+		} else {
+			ativos = xmlService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
 		}
 	}
 		

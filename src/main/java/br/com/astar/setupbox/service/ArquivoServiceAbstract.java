@@ -11,7 +11,7 @@ import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
-public abstract class ArquivoService {
+public abstract class ArquivoServiceAbstract {
 	
 	protected abstract List<Ativo> processaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException;
 	
