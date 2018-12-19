@@ -9,13 +9,13 @@ CREATE TABLE parametros (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO parametros (chave, valor) VALUES ("TIPO", "tipo");
-INSERT INTO parametros (chave, valor) VALUES ("MODEL", "modelo");
-INSERT INTO parametros (chave, valor) VALUES ("FABRICANTE", "fabricante");
-INSERT INTO parametros (chave, valor) VALUES ("SERIAL", "serialNumber");
-INSERT INTO parametros (chave, valor) VALUES ("CADID", "cadId");
-INSERT INTO parametros (chave, valor) VALUES ("CMAC", "cmMac");
-INSERT INTO parametros (chave, valor) VALUES ("EMTAMAC", "emtaMac");
-INSERT INTO parametros (chave, valor) VALUES ("ESTADO", "estado");
-INSERT INTO parametros (chave, valor) VALUES ("TIPODEFEITO", "tipoDefeito");
-INSERT INTO parametros (chave, valor) VALUES ("LOCALIZACAO", "localizacao");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("TIPO", "tipo", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("MODEL", "modelo", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("FABRICANTE", "fabricante", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("SERIAL", "serialNumber", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("CADID", "cadId", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("CMAC", "cmMac", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("EMTAMAC", "emtaMac", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("ESTADO", "estado", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("TIPODEFEITO", "tipoDefeito", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("LOCALIZACAO", "localizacao", "LABORATORIO");

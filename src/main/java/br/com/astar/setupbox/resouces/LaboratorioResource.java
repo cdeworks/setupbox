@@ -1,7 +1,7 @@
 package br.com.astar.setupbox.resouces;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -28,9 +28,7 @@ public class LaboratorioResource {
 	
 	
 	@PostMapping
-	public String uploadFile(@RequestParam MultipartFile file) throws IOException {
-		
-		laboratorioService.validaContentType(file);
+	public String uploadFile(@RequestParam MultipartFile file) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		laboratorioService.processaArquivo(file);
 		

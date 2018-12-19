@@ -150,6 +150,13 @@ public class Ativo {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Ativo [id=" + id + ", tipo=" + tipo + ", modelo=" + modelo + ", fabricante=" + fabricante
+				+ ", serialNumber=" + serialNumber + ", cadId=" + cadId + ", cmMac=" + cmMac + ", emtaMac=" + emtaMac
+				+ ", estado=" + estado + ", tipoDefeito=" + tipoDefeito + ", localizacao=" + localizacao + "]";
+	}
 	
 	
 	

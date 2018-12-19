@@ -2,9 +2,9 @@ package br.com.astar.setupbox.domain.enums;
 
 public enum ContentTypeValidos {
 	
-	XLS("application/vnd.ms-excel"),
-	XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-	CSV("text/csv"),
+	XLS("application/x-tika-msoffice"),
+	XLSX("application/x-tika-ooxml"),
+	CSV("text/plain"),
 	XML("application/xml" );
 
 	public String tipoArquivo;

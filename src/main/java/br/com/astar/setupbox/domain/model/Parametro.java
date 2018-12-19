@@ -1,10 +1,14 @@
 package br.com.astar.setupbox.domain.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 
 @Entity
 @Table(name = "parametros")
@@ -18,7 +22,8 @@ public class Parametro {
 	
 	private String valor;
 	
-	private String tipo;
+	@Enumerated(EnumType.STRING)
+	private TipoArquivoImportacao tipo;
 
 	public Long getId() {
 		return id;
@@ -44,11 +49,11 @@ public class Parametro {
 		this.valor = valor;
 	}
 
-	public String getTipo() {
+	public TipoArquivoImportacao getTipoArquivo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoArquivoImportacao tipo) {
 		this.tipo = tipo;
 	}
 	
