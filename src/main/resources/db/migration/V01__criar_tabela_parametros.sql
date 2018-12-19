@@ -9,13 +9,19 @@ CREATE TABLE parametros (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO parametros (chave, valor, tipo) VALUES ("TIPO", "tipo", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("VENDOR", "fabricante", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("VENDOR MODEL", "modelo", "LABORATORIO");
 INSERT INTO parametros (chave, valor, tipo) VALUES ("MODEL", "modelo", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("FABRICANTE", "fabricante", "LABORATORIO");
 INSERT INTO parametros (chave, valor, tipo) VALUES ("SERIAL", "serialNumber", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("CADID", "cadId", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("CMAC", "cmMac", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("EMTAMAC", "emtaMac", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("ESTADO", "estado", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("TIPODEFEITO", "tipoDefeito", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("SCANNED SERIAL NUMBER", "serialNumber", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("SCANNED DECODER CA", "cadId", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("CM MAC ADDRESS", "cmMac", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("MAC ADDRESS", "cmMac", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("TEST STATUS", "estado", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("FAILURE REASON", "tipoDefeito", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("EMTA MAC ADDRESS", "emtaMac", "LABORATORIO");
+
+
+INSERT INTO parametros (chave, valor, tipo) VALUES ("DEVICE TYPE", "tipo", "LABORATORIO");
+
 INSERT INTO parametros (chave, valor, tipo) VALUES ("LOCALIZACAO", "localizacao", "LABORATORIO");

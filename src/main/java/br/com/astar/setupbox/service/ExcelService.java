@@ -73,7 +73,7 @@ public class ExcelService extends ArquivoService {
 			}
 				
 			Ativo ativo = preencheAtivo(row, colunasParaImportacao);
-			
+			ativo.setLocalizacao(tipoArquivo.name());
 			ativos.add(ativo);
 			
 		}
