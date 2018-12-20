@@ -35,13 +35,27 @@ public class LaboratorioService {
 		
 		List<Ativo> ativos = new ArrayList<>();
 		
+		logger.info("Iniciando serviço....passando pelo motor de importação");
+		
 		if (tipoArquivo.equals(ContentTypeValidos.XLS) || tipoArquivo.equals(ContentTypeValidos.XLSX)) {
-			ativos = excelService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			ativos = excelService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
 		} else if (tipoArquivo.equals(ContentTypeValidos.CSV)) {
-			ativos = csvService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			ativos = csvService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
 		} else {
-			ativos = xmlService.processaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			ativos = xmlService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
 		}
+		
+		logger.info("Arquivo importado.....");
+
+		//TODO - implementar a regra de negocio 
+		for (Ativo ativo : ativos) {
+			ativo.setLocalizacao(TipoArquivoImportacao.LABORATORIO.name());
+			System.out.println(ativo);
+		}
+		
+		
+		
+		
 	}
 		
 	
