@@ -33,7 +33,7 @@ public class CSVService extends ArquivoServiceAbstract {
 	private ParametroRepository parametroRepository;
 
 	@Override
-	protected List<Ativo> processaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	protected List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
@@ -55,6 +55,7 @@ public class CSVService extends ArquivoServiceAbstract {
 			Map<Integer, String> colunasParaImportacao = new HashMap<>();
 	        while ((linha = br.readLine()) != null) {
 	        	
+	        	// Este if é para pegar o header dos campos
 	        	if (totalLinhas == 0) {
 	        		colunasParaImportacao = getColunasParaImportacao(linha, tipoArquivo);
 	        		totalLinhas++;
@@ -62,7 +63,6 @@ public class CSVService extends ArquivoServiceAbstract {
 	        	}
 	        	
 	        	totalLinhas++;
-
 	            
 	            Ativo ativo = preencheAtivo(linha.split(csvDivisor), colunasParaImportacao);
 	            
@@ -70,13 +70,7 @@ public class CSVService extends ArquivoServiceAbstract {
 				
 				ativos.add(ativo);
 
-	            for (Ativo a : ativos) {
-					System.out.println(a);
-				}
-	            
-
 	        }
-	        System.out.println("Total de linhas importadas: " + totalLinhas);
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    } finally {
@@ -89,8 +83,9 @@ public class CSVService extends ArquivoServiceAbstract {
 	        }
 	    }
 		
+		System.out.println("Total de linhas do arquivo CSV importadas: " + ativos.size());
 		
-		return null;
+		return ativos;
 	}
 
 	private Ativo preencheAtivo(String[] linha, Map<Integer, String> colunas) {

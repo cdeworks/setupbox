@@ -38,7 +38,7 @@ public class ExcelService extends ArquivoServiceAbstract {
 	private ParametroRepository parametroRepository;
 	
 	@Override
-	public List<Ativo> processaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	public List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
@@ -60,14 +60,17 @@ public class ExcelService extends ArquivoServiceAbstract {
 		 
 		Iterator<Row> rowIterator = sheet.iterator();
 		
+		// Pega o header dos campos
 		Map<Integer, String> colunasParaImportacao = getColunasExcelParaImportacao(rowIterator, tipoArquivo);
 		
+		// zera o iterator
 		rowIterator = sheet.iterator();
 		
 		while (rowIterator.hasNext()) {
 			
 			Row row = rowIterator.next();
 			
+			// Se for a linha 0 ele ignora porque é a linha dos headers
 			if (row.getRowNum() == 0 ) {
 				continue;
 			}
@@ -79,6 +82,8 @@ public class ExcelService extends ArquivoServiceAbstract {
 		}
 		 
 		 workbook.close();
+		 
+		 logger.info("Total de linhas do XML(X) importados: " + ativos.size());
 		 
 		 return ativos;
 	}
