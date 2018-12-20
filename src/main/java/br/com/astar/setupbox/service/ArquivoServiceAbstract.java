@@ -13,7 +13,7 @@ import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 public abstract class ArquivoServiceAbstract {
 	
-	protected abstract List<Ativo> processaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException;
+	protected abstract List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException;
 	
 	protected abstract void validaArquivo(MultipartFile file);
 	
