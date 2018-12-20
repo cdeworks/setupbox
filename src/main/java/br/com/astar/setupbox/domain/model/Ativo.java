@@ -1,8 +1,12 @@
 package br.com.astar.setupbox.domain.model;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@XmlRootElement(name = "records")
 public class Ativo {
 	
 	@JsonInclude(Include.NON_NULL)
@@ -11,11 +15,14 @@ public class Ativo {
 	@JsonInclude(Include.NON_NULL)
 	private String tipo;
 	
+	
 	@JsonInclude(Include.NON_NULL)
 	private String modelo;
 	
+	
 	@JsonInclude(Include.NON_NULL)
 	private String fabricante;
+	
 	
 	@JsonInclude(Include.NON_NULL)
 	private String serialNumber;
@@ -54,6 +61,7 @@ public class Ativo {
 		this.tipo = tipo;
 	}
 
+	@XmlElement(name = "dut_model_desc")
 	public String getModelo() {
 		return modelo;
 	}
@@ -62,6 +70,7 @@ public class Ativo {
 		this.modelo = modelo;
 	}
 
+	@XmlElement(name = "dut_model_manu")
 	public String getFabricante() {
 		return fabricante;
 	}
@@ -70,6 +79,7 @@ public class Ativo {
 		this.fabricante = fabricante;
 	}
 
+	@XmlElement(name = "dut_instance_serial")
 	public String getSerialNumber() {
 		return serialNumber;
 	}
@@ -78,6 +88,7 @@ public class Ativo {
 		this.serialNumber = serialNumber;
 	}
 
+	@XmlElement(name = "caid")
 	public String getCadId() {
 		return cadId;
 	}
@@ -86,6 +97,7 @@ public class Ativo {
 		this.cadId = cadId;
 	}
 
+	@XmlElement(name = "mac_scan")
 	public String getCmMac() {
 		return cmMac;
 	}
