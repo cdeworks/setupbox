@@ -1,24 +1,21 @@
 package br.com.astar.setupbox.service;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
+import br.com.astar.setupbox.domain.model.Root;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
@@ -27,43 +24,34 @@ public class XMLService extends ArquivoServiceAbstract{
 	
 	private static final Logger logger = LoggerFactory.getLogger(XMLService.class);
 	
-	@Autowired
-	private ParametroRepository parametroRepository;
-
 	@Override
-	protected List<Ativo> processaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	protected List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
+		List<Ativo> ativos = new ArrayList<>();
 		
 		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(file.getInputStream());
+			Root root = new Root();
+			JAXBContext jaxbContext = JAXBContext.newInstance(Root.class);
+	        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+	        root = (Root) unmarshaller.unmarshal(file.getInputStream());
+	        System.out.println(root);
+	        
+	        ativos = root.getAtivos();
+	        
+			logger.info("Total de linhas do XML importados: " + ativos.size());
 			
-			//Passo 1: obter o elemento raiz
-		    Element raiz = doc.getDocumentElement();
-		    System.out.println("O elemento raiz é: " + raiz.getNodeName());
-			
-		    NodeList records = raiz.getChildNodes();
-		    
-		    for (int i=0; i< records.getLength(); i++) {
-		    	System.out.println(records.item(i).getNodeName());
-		    	NodeList campos = records.item(i).getChildNodes();
-		    	for (int j=0;j< campos.getLength(); j++) {
-		    		System.out.println(campos.item(j).getNodeValue());
-		    	}
-		    	break;
-		    }
-			
-		    } catch (Exception e) {
-		    }
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+	    	
+	    }
 		
 		
-		return null;
+		return ativos;
 	}
 
 	@Override
