@@ -1,19 +1,19 @@
 package br.com.astar.setupbox.service;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.tika.Tika;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
-import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 public abstract class ArquivoServiceAbstract {
 	
-	protected abstract List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException;
+	@Async("fileExecutor")
+	protected abstract void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException;
 	
 	protected abstract void validaArquivo(MultipartFile file);
 	
