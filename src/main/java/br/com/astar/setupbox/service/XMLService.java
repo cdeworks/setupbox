@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.domain.model.Root;
-import br.com.astar.setupbox.domain.repository.ParametroRepository;
+import br.com.astar.setupbox.domain.repository.AtivoRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
@@ -24,11 +24,11 @@ public class XMLService extends ArquivoServiceAbstract{
 	
 	private static final Logger logger = LoggerFactory.getLogger(XMLService.class);
 	
+	@Autowired
+	private AtivoRepository ativoRepository;
+	
 	@Override
-	protected List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
-		logger.info("Validando arquivo: " + file.getOriginalFilename());
-		
-		validaArquivo(file);
+	protected void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
@@ -51,11 +51,20 @@ public class XMLService extends ArquivoServiceAbstract{
 	    }
 		
 		
-		return ativos;
+		for (Ativo ativo : ativos) {
+			ativo.setLocalizacao(tipoArquivo.name());
+
+			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
+			
+			ativoRepository.save(ativo);
+			
+		}
+		
 	}
 
 	@Override
 	protected void validaArquivo(MultipartFile file) {
+		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		if (!file.getOriginalFilename().toUpperCase().contains(".XML")) {
 			throw new SetupBoxUploadArquivoInvalidoException("Formato de Arquivo Inválido!");
 		}

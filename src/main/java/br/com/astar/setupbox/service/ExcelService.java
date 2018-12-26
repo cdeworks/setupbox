@@ -26,6 +26,7 @@ import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.domain.model.Parametro;
+import br.com.astar.setupbox.domain.repository.AtivoRepository;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
@@ -37,11 +38,11 @@ public class ExcelService extends ArquivoServiceAbstract {
 	@Autowired
 	private ParametroRepository parametroRepository;
 	
+	@Autowired
+	private AtivoRepository ativoRepository;
+	
 	@Override
-	public List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
-		logger.info("Validando arquivo: " + file.getOriginalFilename());
-		
-		validaArquivo(file);
+	public void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
@@ -85,10 +86,18 @@ public class ExcelService extends ArquivoServiceAbstract {
 		 
 		 logger.info("Total de linhas do XML(X) importados: " + ativos.size());
 		 
-		 return ativos;
+		 for (Ativo ativo : ativos) {
+				ativo.setLocalizacao(tipoArquivo.name());
+
+				//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
+				
+				ativoRepository.save(ativo);
+				
+			}
 	}
 	
 	protected void validaArquivo(MultipartFile file) {
+		logger.info("Validando arquivo: " + file.getContentType());
 		if (file.getOriginalFilename().toUpperCase().contains(".XLSB") 
 				|| file.getOriginalFilename().toUpperCase().contains(".XLSC")
 				|| file.getOriginalFilename().toUpperCase().contains(".XLSW")) {

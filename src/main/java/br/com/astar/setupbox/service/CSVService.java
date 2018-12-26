@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.domain.model.Parametro;
+import br.com.astar.setupbox.domain.repository.AtivoRepository;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
@@ -31,9 +32,12 @@ public class CSVService extends ArquivoServiceAbstract {
 	
 	@Autowired
 	private ParametroRepository parametroRepository;
+	
+	@Autowired
+	private AtivoRepository ativoRepository;
 
 	@Override
-	protected List<Ativo> importaArquivo(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	protected void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
@@ -85,7 +89,14 @@ public class CSVService extends ArquivoServiceAbstract {
 		
 		System.out.println("Total de linhas do arquivo CSV importadas: " + ativos.size());
 		
-		return ativos;
+		for (Ativo ativo : ativos) {
+			ativo.setLocalizacao(tipoArquivo.name());
+
+			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
+			
+			ativoRepository.save(ativo);
+			
+		}
 	}
 
 	private Ativo preencheAtivo(String[] linha, Map<Integer, String> colunas) {
