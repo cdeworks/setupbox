@@ -87,13 +87,13 @@ public class ExcelService extends ArquivoServiceAbstract {
 		 logger.info("Total de linhas do XML(X) importados: " + ativos.size());
 		 
 		 for (Ativo ativo : ativos) {
-				ativo.setLocalizacao(tipoArquivo.name());
+			ativo.setLocalizacao(tipoArquivo.name());
 
-				//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
-				
-				ativoRepository.save(ativo);
-				
-			}
+			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
+			
+			ativoRepository.save(ativo);
+			
+		}
 	}
 	
 	protected void validaArquivo(MultipartFile file) {
