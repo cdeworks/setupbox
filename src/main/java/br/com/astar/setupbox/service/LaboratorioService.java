@@ -8,12 +8,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
+import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
 public class LaboratorioService {
@@ -29,6 +31,7 @@ public class LaboratorioService {
 	@Autowired
 	private XMLService xmlService;
 	
+	
 	public void processaArquivo(MultipartFile file) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		ContentTypeValidos tipoArquivo = excelService.getContentType(file);
@@ -38,22 +41,20 @@ public class LaboratorioService {
 		logger.info("Iniciando serviço....passando pelo motor de importação");
 		
 		if (tipoArquivo.equals(ContentTypeValidos.XLS) || tipoArquivo.equals(ContentTypeValidos.XLSX)) {
-			ativos = excelService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			excelService.validaArquivo(file);
+			excelService.processar(file, TipoArquivoImportacao.LABORATORIO);
 		} else if (tipoArquivo.equals(ContentTypeValidos.CSV)) {
-			ativos = csvService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			csvService.validaArquivo(file);
+			csvService.processar(file, TipoArquivoImportacao.LABORATORIO);
+		} else if (tipoArquivo.equals(ContentTypeValidos.XML)){
+			xmlService.validaArquivo(file);
+			xmlService.processar(file, TipoArquivoImportacao.LABORATORIO);
 		} else {
-			ativos = xmlService.importaArquivo(file, TipoArquivoImportacao.LABORATORIO);
+			throw new SetupBoxUploadArquivoInvalidoException("Formato de Arquivo Inválido!");
 		}
 		
 		logger.info("Arquivo importado.....");
 
-		//TODO - implementar a regra de negocio 
-		for (Ativo ativo : ativos) {
-			ativo.setLocalizacao(TipoArquivoImportacao.LABORATORIO.name());
-			System.out.println(ativo);
-		}
-		
-		
 		
 		
 	}
