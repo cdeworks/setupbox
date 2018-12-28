@@ -1,14 +1,28 @@
 package br.com.astar.setupbox.domain.model;
 
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+
+@Entity
+@Table(name = "ativos")
 @XmlRootElement(name = "records")
-public class Ativo {
+public class Ativo implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JsonInclude(Include.NON_NULL)
 	private Long id;
 	
