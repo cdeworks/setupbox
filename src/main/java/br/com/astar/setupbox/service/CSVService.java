@@ -20,14 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
+import br.com.astar.setupbox.domain.model.GigasBancada;
 import br.com.astar.setupbox.domain.model.Parametro;
 import br.com.astar.setupbox.domain.repository.AtivoRepository;
+import br.com.astar.setupbox.domain.repository.GigasBancadaRepository;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
 public class CSVService extends ArquivoServiceAbstract {
 	
+	private static final String STBTP = "STBTP";
+
+	private static final String CMTP = "CMTP";
+
 	private static final Logger logger = LoggerFactory.getLogger(CSVService.class);
 	
 	@Autowired
@@ -35,12 +41,17 @@ public class CSVService extends ArquivoServiceAbstract {
 	
 	@Autowired
 	private AtivoRepository ativoRepository;
+	
+	@Autowired
+	private GigasBancadaRepository gigaBancadaRepository;
 
 	@Override
 	protected void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
+		
+		String gigas = getGigasType(file.getOriginalFilename());
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
@@ -66,13 +77,20 @@ public class CSVService extends ArquivoServiceAbstract {
 	        		continue;
 	        	}
 	        	
-	        	totalLinhas++;
 	            
 	            Ativo ativo = preencheAtivo(linha.split(csvDivisor), colunasParaImportacao);
 	            
 	            ativo.setLocalizacao(tipoArquivo.name());
+	            
+	            try {
+	            	preencheDefeito(ativo, gigas);
+	            } catch (Exception ex) {
+	            	continue;
+	            }
 				
 				ativos.add(ativo);
+
+				totalLinhas++;
 
 	        }
 	    } catch (IOException e) {
@@ -94,9 +112,29 @@ public class CSVService extends ArquivoServiceAbstract {
 
 			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
 			
+			
 			ativoRepository.save(ativo);
 			
 		}
+	}
+
+	private String getGigasType(String originalFilename) {
+		if (originalFilename.toUpperCase().trim().contains(CMTP)) {
+			return CMTP;
+		} 
+		return STBTP;
+	}
+
+	private void preencheDefeito(Ativo ativo, String gigas) {
+		if (ativo.getTipoDefeito() != null && ! "".equals(ativo.getTipoDefeito())) {
+			GigasBancada gb = gigaBancadaRepository.findByDiagnosticoAndGigas(ativo.getTipoDefeito(), gigas);
+			if (gb != null && gb.getDiagnostico() != null) {
+				ativo.setTipoDefeito(gb.getTipo());
+			} else {
+				ativo.setTipoDefeito(null);
+			}
+		}
+		
 	}
 
 	private Ativo preencheAtivo(String[] linha, Map<Integer, String> colunas) {

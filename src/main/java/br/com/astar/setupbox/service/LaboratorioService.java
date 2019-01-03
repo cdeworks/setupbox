@@ -35,7 +35,8 @@ public class LaboratorioService {
 		
 		ContentTypeValidos tipoArquivo = excelService.getContentType(file);
 		
-		List<Ativo> ativos = new ArrayList<>();
+		validaArquivoLaboratorio(file.getOriginalFilename());
+		
 		
 		logger.info("Iniciando serviço....passando pelo motor de importação");
 		
@@ -55,6 +56,17 @@ public class LaboratorioService {
 		logger.info("Arquivo importado.....");
 
 		
+		
+	}
+
+
+	private void validaArquivoLaboratorio(String originalFilename) {
+		if (!originalFilename.toUpperCase().trim().contains("banc-".toUpperCase()) && 
+			!originalFilename.toUpperCase().trim().contains("cmtp-".toUpperCase()) &&
+			!originalFilename.toUpperCase().trim().contains("stbtp-".toUpperCase()) &&
+			!originalFilename.toUpperCase().trim().contains("titan-".toUpperCase())) {
+			throw new SetupBoxUploadArquivoInvalidoException("Arquivo Inválido!");
+		}
 		
 	}
 		
