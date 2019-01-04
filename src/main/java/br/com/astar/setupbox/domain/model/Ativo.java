@@ -1,8 +1,11 @@
 package br.com.astar.setupbox.domain.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +15,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import br.com.astar.setupbox.domain.enums.StatusArquivo;
 
 
 @Entity
@@ -58,6 +63,37 @@ public class Ativo implements Serializable {
 	
 	@JsonInclude(Include.NON_NULL)
 	private String localizacao;
+	
+	@Enumerated(EnumType.STRING)
+	private StatusArquivo status;
+	
+	private LocalDate dataImportacao;
+	
+	private LocalDate dataProcessamento;
+
+	public StatusArquivo getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusArquivo status) {
+		this.status = status;
+	}
+
+	public LocalDate getDataImportacao() {
+		return dataImportacao;
+	}
+
+	public void setDataImportacao(LocalDate dataImportacao) {
+		this.dataImportacao = dataImportacao;
+	}
+
+	public LocalDate getDataProcessamento() {
+		return dataProcessamento;
+	}
+
+	public void setDataProcessamento(LocalDate dataProcessamento) {
+		this.dataProcessamento = dataProcessamento;
+	}
 
 	public Long getId() {
 		return id;
@@ -111,7 +147,7 @@ public class Ativo implements Serializable {
 		this.cadId = cadId;
 	}
 
-	@XmlElement(name = "mac_scan")
+	//@XmlElement(name = "mac_scan")
 	public String getCmMac() {
 		return cmMac;
 	}
@@ -128,6 +164,7 @@ public class Ativo implements Serializable {
 		this.emtaMac = emtaMac;
 	}
 
+	@XmlElement(name = "result")
 	public String getEstado() {
 		return estado;
 	}
@@ -136,6 +173,7 @@ public class Ativo implements Serializable {
 		this.estado = estado;
 	}
 
+	@XmlElement(name = "failures")
 	public String getTipoDefeito() {
 		return tipoDefeito;
 	}
