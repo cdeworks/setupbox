@@ -3,11 +3,11 @@ package br.com.astar.setupbox.domain.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.astar.setupbox.domain.model.GigasBancada;
+import br.com.astar.setupbox.domain.model.DeParaGigasBancada;
 
 @Repository
-public interface GigasBancadaRepository extends JpaRepository<GigasBancada, Integer> {
+public interface GigasBancadaRepository extends JpaRepository<DeParaGigasBancada, Integer> {
 
-	GigasBancada findByDiagnosticoAndGigas(String tipoDefeito, String gigas);
+	DeParaGigasBancada findByDiagnosticoAndGigas(String tipoDefeito, String gigas);
 
 }

@@ -26,9 +26,9 @@ import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
 import br.com.astar.setupbox.domain.model.Parametro;
-import br.com.astar.setupbox.domain.repository.AtivoRepository;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
+import br.com.astar.setupbox.util.FileUtil;
 
 @Service
 public class ExcelService extends ArquivoServiceAbstract {
@@ -38,11 +38,8 @@ public class ExcelService extends ArquivoServiceAbstract {
 	@Autowired
 	private ParametroRepository parametroRepository;
 	
-	@Autowired
-	private AtivoRepository ativoRepository;
-	
 	@Override
-	public void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	public List<Ativo> processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException, SetupBoxUploadArquivoInvalidoException {
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
@@ -51,7 +48,7 @@ public class ExcelService extends ArquivoServiceAbstract {
 		Workbook workbook;
 		Sheet sheet;
 		
-		if(getContentType(file).equals(ContentTypeValidos.XLS)) {
+		if(FileUtil.getContentType(file).equals(ContentTypeValidos.XLS)) {
 			workbook = new HSSFWorkbook(file.getInputStream());
 		} else {
 			workbook = new XSSFWorkbook(file.getInputStream());
@@ -77,6 +74,9 @@ public class ExcelService extends ArquivoServiceAbstract {
 			}
 				
 			Ativo ativo = preencheAtivo(row, colunasParaImportacao);
+			if (verificaAtivoEstaVazio(ativo)) {
+				continue;
+			}
 			ativo.setLocalizacao(tipoArquivo.name());
 			ativos.add(ativo);
 			
@@ -86,17 +86,31 @@ public class ExcelService extends ArquivoServiceAbstract {
 		 
 		 logger.info("Total de linhas do XML(X) importados: " + ativos.size());
 		 
-		 for (Ativo ativo : ativos) {
-			ativo.setLocalizacao(tipoArquivo.name());
-
-			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
-			
-			ativoRepository.save(ativo);
-			
-		}
+		 return ativos;
 	}
 	
-	protected void validaArquivo(MultipartFile file) {
+	private boolean verificaAtivoEstaVazio(Ativo ativo) {
+		Class<?> clazz = ativo.getClass();
+		Field[] campos = clazz.getDeclaredFields();
+		String nomeAtributo = "";
+		Object valorAtributo = null;
+		 for (Field campo : campos) {            
+	            try {               
+	                nomeAtributo = campo.getName();
+	                campo.setAccessible(true); //Necessário por conta do encapsulamento das variáveis (private)
+	                valorAtributo = campo.get(ativo);                              
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	            if (!nomeAtributo.toUpperCase().equals("serialVersionUID".toUpperCase()) 
+	            		&& valorAtributo != null) {
+	            	return false;
+	            }
+	        }  
+		 return true;
+	}
+
+	public void validaArquivo(MultipartFile file) {
 		logger.info("Validando arquivo: " + file.getContentType());
 		if (file.getOriginalFilename().toUpperCase().contains(".XLSB") 
 				|| file.getOriginalFilename().toUpperCase().contains(".XLSC")
@@ -127,7 +141,8 @@ public class ExcelService extends ArquivoServiceAbstract {
 										atributo.set(instanciaAtivo, valor != null ? valor.toString() : null);
 									} else if(linha.getCell(x.getKey()).getCellType().equals(CellType.NUMERIC)) {
 										Double valor = linha.getCell(x.getKey()).getNumericCellValue();
-										atributo.set(instanciaAtivo, valor != null ? valor.toString() : null);
+										Long valorLong = valor.longValue();
+										atributo.set(instanciaAtivo, valor != null ? valorLong.toString() : null);
 									} else {
 										atributo.set(instanciaAtivo, null);
 									}
@@ -155,17 +170,19 @@ public class ExcelService extends ArquivoServiceAbstract {
 		
 		Map<Integer,String> colunas = new HashMap<>();
 		
-		 Row row = rowIterator.next();
+		Row row = rowIterator.next();
 		 
-		 Iterator<Cell> cellIterator = row.cellIterator();
-		 while (cellIterator.hasNext()) {
+		Iterator<Cell> cellIterator = row.cellIterator();
+		while (cellIterator.hasNext()) {
 			Cell cell = cellIterator.next();
 			for (Parametro parametro : headers) {
 				if (parametro.getChave().toUpperCase().equals(cell.getStringCellValue().toUpperCase())) {
 					colunas.put(cell.getColumnIndex(), parametro.getValor());
 				}
 			}
-			 
+		 }
+		 if (colunas == null || colunas.isEmpty()) {
+			throw new SetupBoxUploadArquivoInvalidoException("Arquivo não possui layout definido na tabela Parametros!");
 		 }
 		
 		return colunas;

@@ -20,38 +20,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.TipoArquivoImportacao;
 import br.com.astar.setupbox.domain.model.Ativo;
-import br.com.astar.setupbox.domain.model.GigasBancada;
 import br.com.astar.setupbox.domain.model.Parametro;
-import br.com.astar.setupbox.domain.repository.AtivoRepository;
-import br.com.astar.setupbox.domain.repository.GigasBancadaRepository;
 import br.com.astar.setupbox.domain.repository.ParametroRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 
 @Service
 public class CSVService extends ArquivoServiceAbstract {
 	
-	private static final String STBTP = "STBTP";
-
-	private static final String CMTP = "CMTP";
-
 	private static final Logger logger = LoggerFactory.getLogger(CSVService.class);
 	
 	@Autowired
 	private ParametroRepository parametroRepository;
 	
-	@Autowired
-	private AtivoRepository ativoRepository;
-	
-	@Autowired
-	private GigasBancadaRepository gigaBancadaRepository;
-
 	@Override
-	protected void processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
+	protected List<Ativo> processar(MultipartFile file, TipoArquivoImportacao tipoArquivo) throws IOException {
 		logger.info("Validando arquivo: " + file.getOriginalFilename());
 		
 		validaArquivo(file);
-		
-		String gigas = getGigasType(file.getOriginalFilename());
 		
 		logger.info("Processando arquivo: " + file.getOriginalFilename());
 		
@@ -82,60 +67,28 @@ public class CSVService extends ArquivoServiceAbstract {
 	            
 	            ativo.setLocalizacao(tipoArquivo.name());
 	            
-	            try {
-	            	preencheDefeito(ativo, gigas);
-	            } catch (Exception ex) {
-	            	continue;
-	            }
-				
 				ativos.add(ativo);
 
 				totalLinhas++;
 
 	        }
 	    } catch (IOException e) {
-	        e.printStackTrace();
+	    	logger.error(e.getMessage());
 	    } finally {
 	        if (br != null) {
 	            try {
 	                br.close();
 	            } catch (IOException e) {
-	                e.printStackTrace();
+	            	logger.error(e.getMessage());
 	            }
 	        }
 	    }
 		
 		System.out.println("Total de linhas do arquivo CSV importadas: " + ativos.size());
 		
-		for (Ativo ativo : ativos) {
-			ativo.setLocalizacao(tipoArquivo.name());
-
-			//TODO - Implementar o DE - PARA dos defeitos, especificação aguardando JC da AStarLabs
-			
-			
-			ativoRepository.save(ativo);
-			
-		}
+		return ativos;
 	}
 
-	private String getGigasType(String originalFilename) {
-		if (originalFilename.toUpperCase().trim().contains(CMTP)) {
-			return CMTP;
-		} 
-		return STBTP;
-	}
-
-	private void preencheDefeito(Ativo ativo, String gigas) {
-		if (ativo.getTipoDefeito() != null && ! "".equals(ativo.getTipoDefeito())) {
-			GigasBancada gb = gigaBancadaRepository.findByDiagnosticoAndGigas(ativo.getTipoDefeito(), gigas);
-			if (gb != null && gb.getDiagnostico() != null) {
-				ativo.setTipoDefeito(gb.getTipo());
-			} else {
-				ativo.setTipoDefeito(null);
-			}
-		}
-		
-	}
 
 	private Ativo preencheAtivo(String[] linha, Map<Integer, String> colunas) {
 		try {
@@ -189,15 +142,19 @@ public class CSVService extends ArquivoServiceAbstract {
 			
 		}
 		
+		if (colunas == null || colunas.isEmpty()) {
+			throw new SetupBoxUploadArquivoInvalidoException("Arquivo não possui layout definido na tabela Parametros!");
+		}
 		return colunas;
 	}
 
 	@Override
-	protected void validaArquivo(MultipartFile file) {
+	public void validaArquivo(MultipartFile file) {
 		if (!file.getOriginalFilename().toUpperCase().contains(".CSV")) {
 			throw new SetupBoxUploadArquivoInvalidoException("Formato de Arquivo Inválido!");
 		}
 		
 	}
+
 
 }

@@ -15,8 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.model.Ativo;
+import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
+import br.com.astar.setupbox.service.CSVService;
+import br.com.astar.setupbox.service.ExcelService;
 import br.com.astar.setupbox.service.LaboratorioService;
+import br.com.astar.setupbox.service.XMLService;
+import br.com.astar.setupbox.util.FileUtil;
 
 @RestController
 @RequestMapping("laboratorios")
@@ -27,21 +33,49 @@ public class LaboratorioResource {
 	@Autowired
 	private LaboratorioService laboratorioService;
 	
+	@Autowired
+	private ExcelService excelService;
+	
+	@Autowired
+	private CSVService csvService;
+	
+	@Autowired
+	private XMLService xmlService;
 	
 	@PostMapping
 	public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
+		validaArquivoLaboratorio(file);
 		
-		laboratorioService.processaArquivo(file);
+		ContentTypeValidos tipoArquivo = FileUtil.getContentType(file);
+		
+		laboratorioService.processaArquivo(file, tipoArquivo);
 		
 		return ResponseEntity.ok("Arquivo recebido com sucesso.");
 		
 	}
 	
-	
 	@GetMapping
 	public List<Ativo> listar() throws IOException {
 		return null;
+	}
+	
+	private void validaArquivoLaboratorio(MultipartFile file) {
+		logger.info("Validando arquivo: " + file.getOriginalFilename());
+
+		String nomeArquivo = file.getOriginalFilename();
+
+		if (nomeArquivo.toUpperCase().trim().contains("banc-".toUpperCase())) {
+			excelService.validaArquivo(file);
+		} else if (nomeArquivo.toUpperCase().trim().contains("cmtp-".toUpperCase()) ||
+				   nomeArquivo.toUpperCase().trim().contains("stbtp-".toUpperCase())) {
+			csvService.validaArquivo(file);
+		} else if (nomeArquivo.toUpperCase().trim().contains("titan-".toUpperCase())) {
+			xmlService.validaArquivo(file);
+		} else {
+			throw new SetupBoxUploadArquivoInvalidoException("Arquivo Inválido!");
+		}
+		
 	}
 
 }
