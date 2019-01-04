@@ -41,7 +41,7 @@ INSERT INTO parametros (chave, valor, tipo) VALUES ("FAILURES", "tipoDefeito", "
 -- de para Bancada RJ 24.08
 INSERT INTO parametros (chave, valor, tipo) VALUES ("TECNOLOGIA", "modelo", "LABORATORIO");
 INSERT INTO parametros (chave, valor, tipo) VALUES ("TERMINAL", "cadId", "LABORATORIO");
-INSERT INTO parametros (chave, valor, tipo) VALUES ("DEFEITO1", "tipoDefeito", "LABORATORIO");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("DEFEITO_1", "tipoDefeito", "LABORATORIO");
 
 
 
