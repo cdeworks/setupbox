@@ -32,6 +32,22 @@ public class SetupBoxExceptionHandler extends ResponseEntityExceptionHandler {
 		
 	}
 	
+	@ExceptionHandler({SetupBoxCredenciaisInvalidasException.class})
+	public ResponseEntity<DetalhesErro> handleSetupBoxCredenciaisInvalidasException(SetupBoxCredenciaisInvalidasException ex,
+											HttpServletRequest request) {
+		
+		String mensagem = ex.getMessage();
+		
+		DetalhesErro erro = new DetalhesErro();
+		erro.setStatus(401l);
+		erro.setTitulo(ex.getMessage());
+		erro.setTimestamp(System.currentTimeMillis());
+		erro.setDetalhes(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(erro);
+		
+	}
+	
 	
 	
 	
