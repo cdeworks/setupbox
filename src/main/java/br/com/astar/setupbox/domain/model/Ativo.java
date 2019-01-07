@@ -1,8 +1,9 @@
 package br.com.astar.setupbox.domain.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import br.com.astar.setupbox.converter.LocalDateTimeConverter;
 import br.com.astar.setupbox.domain.enums.StatusArquivo;
 
 
@@ -67,9 +69,11 @@ public class Ativo implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private StatusArquivo status;
 	
-	private LocalDate dataImportacao;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dataImportacao;
 	
-	private LocalDate dataProcessamento;
+	@Convert(converter = LocalDateTimeConverter.class)
+	private LocalDateTime dataProcessamento;
 
 	public StatusArquivo getStatus() {
 		return status;
@@ -79,19 +83,19 @@ public class Ativo implements Serializable {
 		this.status = status;
 	}
 
-	public LocalDate getDataImportacao() {
+	public LocalDateTime getDataImportacao() {
 		return dataImportacao;
 	}
 
-	public void setDataImportacao(LocalDate dataImportacao) {
+	public void setDataImportacao(LocalDateTime dataImportacao) {
 		this.dataImportacao = dataImportacao;
 	}
 
-	public LocalDate getDataProcessamento() {
+	public LocalDateTime getDataProcessamento() {
 		return dataProcessamento;
 	}
 
-	public void setDataProcessamento(LocalDate dataProcessamento) {
+	public void setDataProcessamento(LocalDateTime dataProcessamento) {
 		this.dataProcessamento = dataProcessamento;
 	}
 
