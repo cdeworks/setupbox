@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.domain.model.Ativo;
+import br.com.astar.setupbox.exception.SetupBoxCredenciaisInvalidasException;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
 import br.com.astar.setupbox.service.CSVService;
 import br.com.astar.setupbox.service.ExcelService;
@@ -43,8 +46,10 @@ public class LaboratorioResource {
 	private XMLService xmlService;
 	
 	@PostMapping
-	public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		
+	public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		 if (!request.isUserInRole("ROLE_LABORATORIO")) {
+            throw new SetupBoxCredenciaisInvalidasException("Credenciais sem autorização para enviar este tipo de arquivo.");
+        }
 		validaArquivoLaboratorio(file);
 		
 		ContentTypeValidos tipoArquivo = FileUtil.getContentType(file);
