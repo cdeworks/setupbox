@@ -2,9 +2,9 @@ package br.com.astar.setupbox.service;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import br.com.astar.setupbox.domain.model.DeParaGigasBancada;
 import br.com.astar.setupbox.domain.repository.AtivoRepository;
 import br.com.astar.setupbox.domain.repository.GigasBancadaRepository;
 import br.com.astar.setupbox.exception.SetupBoxUploadArquivoInvalidoException;
-import br.com.astar.setupbox.util.FileUtil;
 
 @Service
 public class LaboratorioService {
@@ -78,7 +77,7 @@ public class LaboratorioService {
 		for (Ativo ativo : ativos) {
 			ativo.setLocalizacao(TipoArquivoImportacao.LABORATORIO.name());
 			ativo.setStatus(StatusArquivo.RECEBIDO);
-			ativo.setDataImportacao(LocalDate.now());
+			ativo.setDataImportacao(LocalDateTime.now());
 			preencheDefeito(ativo, gigas);
 			ativoRepository.save(ativo);
 			
