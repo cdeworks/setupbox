@@ -11,8 +11,8 @@ CREATE TABLE ativos (
 	tipo_defeito		VARCHAR(50),
 	localizacao			VARCHAR(50),
 	status				VARCHAR(10),
-	data_importacao 	DATE,
-	data_processamento 	DATE
+	data_importacao 	DATETIME,
+	data_processamento 	DATETIME
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
