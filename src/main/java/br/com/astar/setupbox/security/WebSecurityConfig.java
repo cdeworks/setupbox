@@ -16,8 +16,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		PasswordEncoder encoder =
 			     PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-		auth.inMemoryAuthentication().withUser("astar")
-		.password(encoder.encode("123456")).roles("USER");
+		auth.inMemoryAuthentication().withUser("lab").password(encoder.encode("lab123")).roles("USER","LABORATORIO")
+			.and()
+			.withUser("emb").password(encoder.encode("emb123")).roles("USER","EMBALAGEM");
 	}
 	
 	protected void configure(HttpSecurity http) throws Exception {
