@@ -1,13 +1,13 @@
 package br.com.astar.setupbox.rest;
 
-import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class RESTClient {
+	
+	private static final Logger logger = LoggerFactory.getLogger(RESTClient.class);
 
 
 	public enum HTTPMethod { GET, POST, PUT, DELETE; }
@@ -29,26 +29,29 @@ public class RESTClient {
 	}
 
 	public com.sun.jersey.api.client.ClientResponse request(String uri, HTTPMethod method, Object entity) {
-		Client client = Client.create();
-
-		WebResource resource = client.resource(uri);
-
-		if (token != null) 
-			resource.header("Authorization", token);
-
-		switch(method) {
-		case GET:
-			return resource.get(ClientResponse.class);
-		case POST:
-			return resource.type(MediaType.APPLICATION_JSON)
-					.post(ClientResponse.class, new Gson().toJson(entity));
-		case PUT: 
-			return resource.put(ClientResponse.class);
-		case DELETE:
-			return resource.delete(ClientResponse.class);
-		default: 
-			return null;
-		}
+		logger.info("Enviando para Blockchain.....");
+		//TODO - Descomentar quando a API estiver disponivel
+		return null;
+//		Client client = Client.create();
+//
+//		WebResource resource = client.resource(uri);
+//
+//		if (token != null) 
+//			resource.header("Authorization", token);
+//
+//		switch(method) {
+//		case GET:
+//			return resource.get(ClientResponse.class);
+//		case POST:
+//			return resource.type(MediaType.APPLICATION_JSON)
+//					.post(ClientResponse.class, new Gson().toJson(entity));
+//		case PUT: 
+//			return resource.put(ClientResponse.class);
+//		case DELETE:
+//			return resource.delete(ClientResponse.class);
+//		default: 
+//			return null;
+//		}
 	}
 
 }
