@@ -37,6 +37,9 @@ public class EmbalagemService {
 		
 		logger.info("Iniciando serviço....passando pelo motor de importação");
 		
+		String status = file.getOriginalFilename().toUpperCase().trim().contains("cos-".toUpperCase()) ? "COSMETICO" : "ELETRICO";
+		
+		
 		List<Ativo> ativos = new ArrayList<>();
 		
 		
@@ -51,15 +54,8 @@ public class EmbalagemService {
 		logger.info("Buscando de para de defeitos e salvando ativos...");
 		
 		for (Ativo ativo : ativos) {
-			Evento evento = new Evento();
-			evento.setSerialNumber(ativo.getSerialNumber());
-			evento.setLocalizacao(TipoArquivoImportacao.EMBALAGEM.name());
-			evento.setDataHora(LocalDateTime.now());
-			
 			//TODO - ENVIA PARA API BLOCKCHAIN
-			
-			apiService.enviar(ativo, TipoArquivoImportacao.EMBALAGEM);
-			
+			apiService.enviar(ativo, TipoArquivoImportacao.EMBALAGEM, status);
 		}
 
 		

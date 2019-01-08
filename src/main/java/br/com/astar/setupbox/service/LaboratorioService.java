@@ -49,6 +49,9 @@ public class LaboratorioService {
 	private AtivoRepository ativoRepository;
 	
 	@Autowired
+	private APIBlockchainService apiService;
+	
+	@Autowired
 	private GigasBancadaRepository gigaBancadaRepository;
 	
 	@Async("fileExecutor")
@@ -80,6 +83,9 @@ public class LaboratorioService {
 			ativo.setDataImportacao(LocalDateTime.now());
 			preencheDefeito(ativo, gigas);
 			ativoRepository.save(ativo);
+			
+			//TODO - Definir o que vai passar no status para enviar para o blockchain
+			apiService.enviar(ativo, TipoArquivoImportacao.LABORATORIO, null);
 			
 		}
 
