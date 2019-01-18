@@ -54,7 +54,7 @@ public class LaboratorioService {
 	@Autowired
 	private GigasBancadaRepository gigaBancadaRepository;
 	
-	@Async("fileExecutor")
+	
 	public void processaArquivo(MultipartFile file, ContentTypeValidos tipoArquivo) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		
 		logger.info("Iniciando serviço....passando pelo motor de importação");
@@ -63,6 +63,16 @@ public class LaboratorioService {
 		
 		String gigas = getGigasType(file.getOriginalFilename());
 		
+		processar(file, tipoArquivo, ativos, gigas);
+
+		
+		
+	}
+
+
+	@Async("fileExecutor")
+	private void processar(MultipartFile file, ContentTypeValidos tipoArquivo, List<Ativo> ativos, String gigas)
+			throws IOException {
 		if (tipoArquivo.equals(ContentTypeValidos.XLS) || tipoArquivo.equals(ContentTypeValidos.XLSX)) {
 			ativos = excelService.processar(file, TipoArquivoImportacao.LABORATORIO);
 		} else if (tipoArquivo.equals(ContentTypeValidos.CSV)) {
@@ -88,10 +98,9 @@ public class LaboratorioService {
 			apiService.enviar(ativo, TipoArquivoImportacao.LABORATORIO, null);
 			
 		}
-
-		
-		
 	}
+	
+	
 
 	private void preencheDefeito(Ativo ativo, String gigas) {
 		if (ativo.getTipoDefeito() != null && ! "".equals(ativo.getTipoDefeito())) {

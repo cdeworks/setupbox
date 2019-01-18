@@ -21,10 +21,10 @@ import br.com.astar.setupbox.service.HigienizacaoService;
 import br.com.astar.setupbox.util.FileUtil;
 
 @RestController
-@RequestMapping("higienizacoes")
-public class HigienizacaoResource {
+@RequestMapping("reparadora")
+public class ReparadoraResource {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HigienizacaoResource.class);
+	private static final Logger logger = LoggerFactory.getLogger(ReparadoraResource.class);
 	
 	
 	@Autowired
@@ -35,7 +35,7 @@ public class HigienizacaoResource {
 	public ResponseEntity<String> uploadFile(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		logger.info("Importando arquivo: " + file.getOriginalFilename());
 		
-		 if (!request.isUserInRole("ROLE_HIGIENIZACAO")) {
+		 if (!request.isUserInRole("ROLE_REPARADORA")) {
             throw new SetupBoxCredenciaisInvalidasException("Credenciais sem autorização para enviar este tipo de arquivo.");
         }
 		 
