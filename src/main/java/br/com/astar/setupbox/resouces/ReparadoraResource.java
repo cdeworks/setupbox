@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.astar.setupbox.domain.enums.ContentTypeValidos;
 import br.com.astar.setupbox.exception.SetupBoxCredenciaisInvalidasException;
-import br.com.astar.setupbox.service.HigienizacaoService;
+import br.com.astar.setupbox.service.ReparadoraService;
 import br.com.astar.setupbox.util.FileUtil;
 
 @RestController
@@ -28,7 +28,7 @@ public class ReparadoraResource {
 	
 	
 	@Autowired
-	private HigienizacaoService higienizacaoService;
+	private ReparadoraService reparadoraService;
 	
 	
 	@PostMapping
@@ -41,7 +41,7 @@ public class ReparadoraResource {
 		 
 		ContentTypeValidos tipoArquivo = FileUtil.getContentType(file);
 		
-		higienizacaoService.processaArquivo(file, tipoArquivo);
+		reparadoraService.processaArquivo(file, tipoArquivo);
 		
 		return ResponseEntity.ok("Arquivo recebido com sucesso.");
 		

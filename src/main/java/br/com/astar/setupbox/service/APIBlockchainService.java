@@ -62,7 +62,16 @@ public class APIBlockchainService {
 			}
 			break;
 			
-			
+		case REPARADORA:
+			client.request(uri, HTTPMethod.GET, criarEvento(ativo, tipoArquivo,status));
+			atv = ativoRepository.findBySerialNumber(ativo.getSerialNumber());
+			if (atv.isPresent()) {
+				atv.get().setLocalizacao(tipoArquivo.name());
+				atv.get().setDataProcessamento(LocalDateTime.now());
+				atv.get().setStatus(StatusArquivo.ENVIADO);
+				ativoRepository.save(atv.get());
+			}
+			break;	
 		default:
 			break;
 		

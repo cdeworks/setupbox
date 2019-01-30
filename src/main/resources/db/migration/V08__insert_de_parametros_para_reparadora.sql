@@ -1,1 +1,1 @@
-INSERT INTO parametros (chave, valor, tipo) VALUES ("Box/Serial Number", "serialNumber", "REPARADORA");
+INSERT INTO parametros (chave, valor, tipo) VALUES ("BOX/SERIAL NUMBER", "serialNumber", "REPARADORA");
